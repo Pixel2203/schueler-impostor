@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>WebSocket Verbindungstest</title>
+</head>
+<body>
+  <h1>WebSocket Verbindungstest</h1>
+  <p id="status">🔌 Verbindung wird aufgebaut...</p>
+  <button id="startGame" onclick="startGame()"}>Spiel starten</button>
+  <ul id="playerlist">
+
+  </ul>
+  <script>
+    const statusEl = document.getElementById('status');
+    const playerlist = document.getElementById("playerlist")
+    const ws = new WebSocket("ws://10.1.105.4:3001");
+
+    ws.onopen = () => {
+      
+      statusEl.textContent = "✅ Verbindung erfolgreich!";
+      loginAsAdmin(ws)
+    };
+
+    ws.onerror = (err) => {
+      statusEl.textContent = "❌ Fehler beim Verbinden.";
+      console.error("WebSocket Fehler:", err);
+    };
+
+    ws.onclose = () => {
+      statusEl.textContent = "🔌 Verbindung getrennt.";
+    };
+
+    ws.onmessage = (message) => {
+      const msg = JSON.parse(message.data);
+      const {name} = msg;
+      if(msg.action == "playerJoin") {
+        const li = document.createElement("li");
+        li.id = "player-"+name;
+        li.textContent = name;
+        playerlist.appendChild(li);
+        console.log("player joined")
+      }else if(msg.action == "playerLeave") {
+        document.getElementById("player-" + name).remove()
+        console.log("player left")
+      }
+    }
+
+    function startGame() {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+          action: "startGame"
+        }))
+      } else {
+        statusEl.textContent = "❌ Verbindung ist nicht offen.";
+      }
+    }
+
+    /*
+    * @param ws {Websocket}
+    * */
+    function loginAsAdmin(ws) {
+      ws.send(JSON.stringify({
+        action: "loginAdmin",
+        name: "eric_admin"
+      }));
+    }
+  </script>
+</body>
+</html>
