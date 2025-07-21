@@ -1,6 +1,6 @@
-const nameID = "Marvin K" // hier musst du deinen Namen eintragen
+
 //const websocketURL = "10.1.104.207"
-const websocketURL = "10.1.105.4"
+const websocketURL = "127.0.0.1"
 const ws = new WebSocket(`ws://${websocketURL}:3001`)
 const MessageType = {
     loginUser: "loginUser",
@@ -21,9 +21,13 @@ ws.onmessage = (message) => {
     }
 
     if (msg.action == "assignRole") {
+        rolleZuweisen(msg.role);
         console.log(msg.role)
-        document.getElementById("role").value = msg.role;
         return;
+    }
+
+    if(msg.action == "yourTurn") {
+        deinZug();
     }
 
 

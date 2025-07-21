@@ -2,11 +2,14 @@
 <html>
 
     <head>
+        <script>
+            var nameID = "Spieler 3" // hier musst du deinen Namen eintragen
+        </script>
         <script src="script.js"></script>
     </head>
     <body>
         <textarea id="logger"></textarea>
-        <p class="role">Rolle unbekannt</p>
+        <p id="role">Rolle unbekannt</p>
 
 
 
@@ -14,6 +17,14 @@
 
             function nachrichtAusgeben(nachricht) {
                 document.getElementById("logger").value += nachricht + "\n"
+            }
+
+            function rolleZuweisen(rolle) {
+                document.getElementById("role").value = rolle;
+            }
+
+            function deinZug() {
+                document.getElementById("logger").value += "Du bist dran dein Wort einzugeben \n"
             }
 
 

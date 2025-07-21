@@ -102,15 +102,14 @@ function getPlayerNameByCon() {
 
 function handleMessage(msg, ws) {
     const {action} = msg;
-    if(action == MessageType.loginUser) {
+    if(action === MessageType.loginUser) {
         loginAsPlayer(msg.name, ws)
-
-    }else if(action == MessageType.loginAdmin) {
+    }else if(action === MessageType.loginAdmin) {
         loginAsAdmin(msg, ws);
-    }else if(action == MessageType.start) {
+    }else if(action === MessageType.start) {
         game.setClients(clients)
         game.start()
-    }else if(action == MessageType.sendWort) {
+    }else if(action === MessageType.sendWort) {
         game.wordReceived(getPlayerNameByCon(ws), msg.word)
     }
 }

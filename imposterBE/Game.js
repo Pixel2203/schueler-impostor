@@ -49,7 +49,7 @@ class Game {
             await new Promise( resolve => setTimeout(resolve, Game.turnTime))
         }
 
-        evaluate();
+        this.evaluate();
 
     }
 
