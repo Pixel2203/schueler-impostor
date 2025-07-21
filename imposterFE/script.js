@@ -30,6 +30,17 @@ ws.onmessage = (message) => {
         deinZug();
     }
 
+    if(msg.action === "allWords") {
+
+        /** @type {Array<string>} */
+        const words = msg.words;
+        zeigeWoerterAn(words)
+    }
+
+    if(msg.action == "showImpostor") {
+        zeigeImpostorAn(msg.impostor)
+    }
+
 
 }
 

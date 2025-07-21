@@ -19,7 +19,11 @@ const MessageType = {
     loginUser: "loginUser",
     loginAdmin: "loginAdmin",
     sendWort: "wordInput",
-    start: "startGame"
+    start: "startGame",
+    anotherRound: "anotherRound",
+    playerLeave: "playerLeave",
+    playerJoin: "playerJoin",
+    endGame: "endGame"
 }
 const game = new Game(clients)
 wss.on('connection', (ws) => {
@@ -34,7 +38,7 @@ wss.on('connection', (ws) => {
                 console.log(`Player ${entry[0]} left the game`)
                 if(adminPanelCon) {
                     const msg = {
-                        action: "playerLeave",
+                        action: MessageType.playerLeave,
                         name: entry[0]
                     }
                     adminPanelCon.send(JSON.stringify(msg))
@@ -55,7 +59,7 @@ function loginAsAdmin(msg, ws) {
     for(const player of Array.from(clients.keys())) {
         if(adminPanelCon) {
             const msg = {
-                action: "playerJoin",
+                action: MessageType.playerJoin,
                 name: player
             }
             adminPanelCon.send(JSON.stringify(msg))
@@ -83,33 +87,37 @@ function loginAsPlayer(name, ws) {
     console.log(`Client joined with name=${name}`)
     if(adminPanelCon) {
         const msg = {
-            action: "playerJoin",
+            action: MessageType.playerJoin,
             name: name
         }
         adminPanelCon.send(JSON.stringify(msg))
     }
 }
 
-function getPlayerNameByCon() {
+function getPlayerNameByCon(webCon) {
     let p;
     Array.from(clients.entries()).forEach((entry) => {
-        if(entry[1] === ws) {
+        if(entry[1] === webCon) {
             p = entry[0];
         }
     });
     return p;
 }
 
-function handleMessage(msg, ws) {
+function handleMessage(msg, webCon) {
     const {action} = msg;
     if(action === MessageType.loginUser) {
-        loginAsPlayer(msg.name, ws)
+        loginAsPlayer(msg.name, webCon)
     }else if(action === MessageType.loginAdmin) {
-        loginAsAdmin(msg, ws);
+        loginAsAdmin(msg, webCon);
     }else if(action === MessageType.start) {
         game.setClients(clients)
         game.start()
     }else if(action === MessageType.sendWort) {
-        game.wordReceived(getPlayerNameByCon(ws), msg.word)
+        game.wordReceived(getPlayerNameByCon(webCon), msg.word)
+    }else if(action === MessageType.anotherRound) {
+        game.startAnotherRound();
+    }else if(action === MessageType.endGame) {
+        game.endGame();
     }
 }

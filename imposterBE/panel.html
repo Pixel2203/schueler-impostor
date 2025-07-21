@@ -7,10 +7,14 @@
 <body>
   <h1>WebSocket Verbindungstest</h1>
   <p id="status">🔌 Verbindung wird aufgebaut...</p>
-  <button id="startGame" onclick="startGame()"}>Spiel starten</button>
-  <ul id="playerlist">
 
-  </ul>
+  <h3>Control Panel</h3>
+  <button id="startGame" onclick="startGame()"}>Spiel starten</button>
+  <button onclick="startAnotherRound()">Weitere Runde Starten</button>
+  <button onclick="endGame()">Spiel Beenden</button>
+  <h3>Spielerliste</h3>
+  <ul id="playerlist"></ul>
+
   <script>
     const statusEl = document.getElementById('status');
     const playerlist = document.getElementById("playerlist")
@@ -34,13 +38,13 @@
     ws.onmessage = (message) => {
       const msg = JSON.parse(message.data);
       const {name} = msg;
-      if(msg.action == "playerJoin") {
+      if(msg.action === "playerJoin") {
         const li = document.createElement("li");
         li.id = "player-"+name;
         li.textContent = name;
         playerlist.appendChild(li);
         console.log("player joined")
-      }else if(msg.action == "playerLeave") {
+      }else if(msg.action === "playerLeave") {
         document.getElementById("player-" + name).remove()
         console.log("player left")
       }
@@ -64,6 +68,18 @@
         action: "loginAdmin",
         name: "eric_admin"
       }));
+    }
+
+    function startAnotherRound() {
+      ws.send(JSON.stringify({
+        action: "anotherRound"
+      }))
+    }
+
+    function endGame() {
+      ws.send(JSON.stringify({
+        action: "endGame"
+      }))
     }
   </script>
 </body>

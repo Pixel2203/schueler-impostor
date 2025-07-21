@@ -25,6 +25,8 @@ class Game {
     chosenWords
 
     static turnTime = 20000;
+
+    resolveCurrentWordTimer;
     constructor() {
         this.chosenWords= new Map();
     }
@@ -33,24 +35,36 @@ class Game {
         this.#clients = clients;
     }
 
-    async start() {
+    start() {
         const players = Array.from(this.#clients.keys());
         if(players.length === 0) throw new Error("INVALID PLAYER COUNT!");
         const randomIndex = Math.floor(Math.random() * players.length)
         this.imposterId = players[randomIndex];
         this.players = players.filter(name => name !== this.imposterId);
         this.assignRoles()
+        this.startRound();
 
+
+
+
+    }
+
+    async startRound() {
         for(const player of this.#clients.keys()) {
             const con = this.#clients.get(player);
-            const msg = {action: "yourTurn", turnTime: Game.turnTime}
+            const wordsFromOtherPlayers = this.chosenWords.values().toArray();
+            const msg = {action: "yourTurn", turnTime: Game.turnTime, wordsFromOtherPlayers: wordsFromOtherPlayers }
             con.send(JSON.stringify(msg));
             this.currentTurn = player;
-            await new Promise( resolve => setTimeout(resolve, Game.turnTime))
+
+            await new Promise( resolve => {
+                this.resolveCurrentWordTimer = resolve;
+                setTimeout(resolve, Game.turnTime);
+            })
+
         }
 
         this.evaluate();
-
     }
 
     assignRoles() {
@@ -76,6 +90,7 @@ class Game {
     wordReceived(name, word) {
         if(name === this.currentTurn) {
             this.chosenWords.set(name, word);
+            this.resolveCurrentWordTimer();
         }
     }
 
@@ -96,6 +111,22 @@ class Game {
                 action: "allWords",
                 words: words
             }
+            con.send(JSON.stringify(msg))
+        })
+    }
+
+    startAnotherRound() {
+        this.chosenWords.clear()
+        this.startRound();
+    }
+
+    endGame() {
+        const msg = {
+            action: "showImpostor",
+            impostor: this.imposterId
+        }
+        this.players.forEach(player => {
+            const con = this.#clients.get(player);
             con.send(JSON.stringify(msg))
         })
     }

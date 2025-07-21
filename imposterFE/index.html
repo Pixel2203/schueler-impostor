@@ -3,16 +3,16 @@
 
     <head>
         <script>
-            var nameID = "Spieler 4" // hier musst du deinen Namen eintragen
+            var nameID = "Spieler 89" // hier musst du deinen Namen eintragen
         </script>
         <script src="script.js"></script>
     </head>
     <body>
         <textarea id="logger"></textarea>
         <p id="role">Rolle unbekannt</p>
-
-
-
+        <input id="word-input" placeholder="Dein Wort"/>
+        <button onclick="sendeDeinWortAnServer()">Absenden</button>
+        <ul id="allWords"></ul>
         <script>
 
             function nachrichtAusgeben(nachricht) {
@@ -26,6 +26,24 @@
 
             function deinZug() {
                 document.getElementById("logger").value += "Du bist dran dein Wort einzugeben \n"
+            }
+
+            function sendeDeinWortAnServer() {
+                const input = document.getElementById("word-input").value;
+                sendeWortAnServer(input)
+            }
+
+            function zeigeWoerterAn(woerter) {
+                const liste = document.getElementById("allWords")
+                woerter.forEach(wort => {
+                    const li = document.createElement("li");
+                    li.textContent = `${wort.name} - ${wort.word}`;
+                    liste.appendChild(li);
+                })
+            }
+
+            function zeigeImpostorAn(impostor) {
+                nachrichtAusgeben("Der Impostor ist " + impostor)
             }
 
 
