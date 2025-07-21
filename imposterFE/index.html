@@ -3,8 +3,9 @@
 
     <head>
         <script>
-            var nameID = "Spieler 89" // hier musst du deinen Namen eintragen
+            var nameID = "Spieler 9" // hier musst du deinen Namen eintragen
         </script>
+        <script src="utils.js"></script>
         <script src="script.js"></script>
     </head>
     <body>
@@ -35,9 +36,9 @@
 
             function zeigeWoerterAn(woerter) {
                 const liste = document.getElementById("allWords")
+                leereListe(liste);
                 woerter.forEach(wort => {
-                    const li = document.createElement("li");
-                    li.textContent = `${wort.name} - ${wort.word}`;
+                    const li = erstelleListenelement(`${wort.name} - ${wort.word}`)
                     liste.appendChild(li);
                 })
             }

@@ -25,7 +25,15 @@ const MessageType = {
     playerJoin: "playerJoin",
     endGame: "endGame"
 }
-const game = new Game(clients)
+
+function sendMessageToAdmin (message) {
+    adminPanelCon.send(JSON.stringify({
+        action: "state",
+        message: message
+    }))
+}
+const game = new Game(sendMessageToAdmin.bind(this))
+
 wss.on('connection', (ws) => {
     ws.on("message", (message) => {
         handleMessage(JSON.parse(message), ws)

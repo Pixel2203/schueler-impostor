@@ -27,8 +27,11 @@ class Game {
     static turnTime = 20000;
 
     resolveCurrentWordTimer;
-    constructor() {
+
+    sendUpdateFunction;
+    constructor(sendUpdateToAdmin) {
         this.chosenWords= new Map();
+        this.sendUpdateFunction = sendUpdateToAdmin;
     }
 
     setClients(clients) {
@@ -38,6 +41,7 @@ class Game {
     start() {
         const players = Array.from(this.#clients.keys());
         if(players.length === 0) throw new Error("INVALID PLAYER COUNT!");
+        this.sendUpdateFunction("Assigning Roles")
         const randomIndex = Math.floor(Math.random() * players.length)
         this.imposterId = players[randomIndex];
         this.players = players.filter(name => name !== this.imposterId);
@@ -50,11 +54,13 @@ class Game {
     }
 
     async startRound() {
+        this.sendUpdateFunction("Started Round")
         for(const player of this.#clients.keys()) {
             const con = this.#clients.get(player);
             const wordsFromOtherPlayers = this.chosenWords.values().toArray();
             const msg = {action: "yourTurn", turnTime: Game.turnTime, wordsFromOtherPlayers: wordsFromOtherPlayers }
             con.send(JSON.stringify(msg));
+            this.sendUpdateFunction(`${player} is writing a similar word right now`)
             this.currentTurn = player;
 
             await new Promise( resolve => {
@@ -113,6 +119,7 @@ class Game {
             }
             con.send(JSON.stringify(msg))
         })
+        this.sendUpdateFunction("Evaluation Phase")
     }
 
     startAnotherRound() {

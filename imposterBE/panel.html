@@ -12,6 +12,8 @@
   <button id="startGame" onclick="startGame()"}>Spiel starten</button>
   <button onclick="startAnotherRound()">Weitere Runde Starten</button>
   <button onclick="endGame()">Spiel Beenden</button>
+  <h4>Derzeitiger Spielstatus</h4>
+  <p id="gamestate"></p>
   <h3>Spielerliste</h3>
   <ul id="playerlist"></ul>
 
@@ -47,6 +49,9 @@
       }else if(msg.action === "playerLeave") {
         document.getElementById("player-" + name).remove()
         console.log("player left")
+      }else if(msg.action === "state") {
+        document.getElementById("gamestate").textContent = msg.message;
+        console.log(msg.message)
       }
     }
 
