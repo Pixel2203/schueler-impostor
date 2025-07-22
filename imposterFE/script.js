@@ -16,7 +16,7 @@ ws.onmessage = (message) => {
     console.log(message.data)
     const msg = JSON.parse(message.data);
     if(msg.action === "log") {
-        nachrichtAusgeben(msg.message);
+        spielbeitrittNachrichtAnzeigen(msg.message);
         return;
     }
 
