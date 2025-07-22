@@ -9,42 +9,54 @@
         <script src="script.js"></script>
     </head>
     <body>
-        <textarea id="logger"></textarea>
-        <p id="role">Rolle unbekannt</p>
-        <input id="word-input" placeholder="Dein Wort"/>
-        <button onclick="sendeDeinWortAnServer()">Absenden</button>
-        <ul id="allWords"></ul>
         <script>
 
+            /**
+             * Gibt Servernachrichten aus als Informationen für den Spieler
+             * @param nachricht
+             */
             function nachrichtAusgeben(nachricht) {
-                document.getElementById("logger").value += nachricht + "\n"
             }
 
+            /**
+             * Gibt die Rolle als parameter mit, diese soll
+             * in einem Textfeld ausgegeben werden
+             * @param rolle {string}
+             */
             function rolleZuweisen(rolle) {
-                nachrichtAusgeben(rolle)
-                //document.getElementById("role").value = rolle;
             }
 
+            /**
+             * Benachrichtigung dass du als Spieler jetzt dran bist,
+             * es sollte daher eine Meldung auf dem Bildschirm erscheinen
+             */
             function deinZug() {
-                document.getElementById("logger").value += "Du bist dran dein Wort einzugeben \n"
             }
 
+            /**
+             * In dieser Funktion musst du dein Wort aus einer Textbox an den Server übermitteln
+             *
+             * Tipp: Um Nachrichten an den Server zu schicken, kannst du die Funktion 'sendeWortAnServer' benutzen
+             */
             function sendeDeinWortAnServer() {
-                const input = document.getElementById("word-input").value;
-                sendeWortAnServer(input)
+
             }
 
+            /**
+             * Hier musst du alle Wörter anzeigen, die die verschiedenen Spieler eingegeben haben.
+             * Die Wörter befinden sich in der 'woerter' Variable
+             *
+             * @param woerter {Array<{name: string, word: string}>}
+             */
             function zeigeWoerterAn(woerter) {
-                const liste = document.getElementById("allWords")
-                leereListe(liste);
-                woerter.forEach(wort => {
-                    const li = erstelleListenelement(`${wort.name} - ${wort.word}`)
-                    liste.appendChild(li);
-                })
             }
 
+            /**
+             * Hier musst du den Namen des Impostors auf dem Bildschirm ausgeben
+             * Der name des Impostors befindet sich in der 'impostor' variable
+             * @param impostor
+             */
             function zeigeImpostorAn(impostor) {
-                nachrichtAusgeben("Der Impostor ist " + impostor)
             }
 
 
